@@ -1,0 +1,206 @@
+func gameScreen () {
+ 
+//  GameScreen.swift
+ 
+// libraries needed
+import SpriteKit
+import GameplayKit
+import Foundation
+ 
+ 
+var score = 0 // resets the score after each game
+ 
+class GameScene: SKScene, SKPhysicsContactDelegate
+ 
+{
+    enum gameState{
+        case preGame // before game starts
+        case inGame //during game
+        case endGame //after game
+    }
+    
+    var currentGameState = gameState.preGame
+    let scoreLabel = SKLabelNode(fontNamed: "Consequences")
+    let levelLabel = SKLabelNode(fontNamed: "Consequences")
+    let startLabel = SKLabelNode(fontNamed: "Consequences")
+    let themeLabel = SKLabelNode(fontNamed: "Consequences")
+ 
+    
+    var level = 0 //resets level
+    
+    
+    struct PhysicsCategories {
+        static let None : UInt32 = 0
+        static let Player : UInt32 = 0b1 //1
+           }
+    
+    
+    func random () -> CGFloat {
+        return CGFloat (Float(arc4random()) / 4294967296)
+    } // '4294967295' is not exactly representable as 'Float'; it becomes '4294967296' 0xFFFFFFFF
+    
+    func random (min: CGFloat, max : CGFloat) -> CGFloat {
+        return random() * (max - min) + min
+    }
+ 
+    var gameArea: CGRect
+    var dot  = SKSpriteNode(imageNamed: "dot1")
+    var color: Int = 1
+    var theme: Int = 1
+    
+    override init(size: CGSize) {
+        if UIDevice().userInterfaceIdiom == .phone && UIScreen.main.nativeBounds.height == 2436 {
+            //iPhone X
+            let maxAspectRatio: CGFloat = 19.5/9.0
+            let playableWidth = size.height / maxAspectRatio
+            let margin = (size.width - playableWidth) / 2
+            gameArea = CGRect(x: margin, y: 0, width: playableWidth, height: size.height)
+        }
+        
+        else {
+            let maxAspectRatio: CGFloat = 16.0/9.0
+            let playableWidth = size.height / maxAspectRatio
+            let margin = (size.width - playableWidth) / 2
+            gameArea = CGRect(x: margin, y: 0, width: playableWidth, height: size.height)
+        }
+ 
+        super.init(size: size)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+  
+    
+    override func didMove(to view: SKView) {
+        
+        self.physicsWorld.contactDelegate = self
+ 
+        score = 0 //restarts score
+ 
+        //creates background
+       
+        let background = SKSpriteNode(imageNamed:"background")
+        background.size = self.size
+        background.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+        background.zPosition = 0
+        self.addChild(background)
+    
+        
+        scoreLabel.position = CGPoint(x: self.size.width/2, y: self.size.height + scoreLabel.frame.size.height)
+        scoreLabel.fontColor = .white
+        scoreLabel.fontSize = 150
+        scoreLabel.zPosition = 100
+        scoreLabel.text = String(score)
+        self.addChild(scoreLabel)
+ 
+         themeLabel.position = CGPoint(x: self.size.width/2, y: self.size.height + themeLabel.frame.size.height)
+       themeLabel.fontColor = .white
+        themeLabel.fontSize = 150
+        themeLabel.zPosition = 100
+        themeLabel.text = String(theme) //displays random theme
+        self.addChild(themeLabel)
+       
+    
+        let moveToScreen = SKAction.moveTo(y: self.size.height * 0.8, duration: 0.3)
+        scoreLabel.run(moveToScreen)
+ 
+ 	let moveToScreen = SKAction.moveTo(y: self.size.height * 0.8, duration: 0.3)
+        scoreLabel.run(moveToScreen)
+        
+        startLabel.text = "Tap to Start"
+        startLabel.fontSize = 100
+        startLabel.fontColor = SKColor.white
+        startLabel.zPosition = 1
+        startLabel.position = CGPoint (x: self.size.width/2, y: self.size.height/2)
+        startLabel.alpha = 0 //see through
+        self.addChild(startLabel)
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.3)
+        startLabel.run(fadeInAction)
+        
+    }
+ 
+    func startGame() {
+       currentGameState = gameState.inGame
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
+        let deleteAction = SKAction.removeFromParent()
+        let deleteSequence = SKAction.sequence([fadeOutAction, deleteAction])
+        startLabel.run(deleteSequence)
+        
+        let moveEquationToScreen = SKAction.moveTo(y: self.size.height * 0.05, duration: 0.5)
+        
+        let startGameSequence = SKAction.sequence([moveEquationToScreen])
+        block.run(startGameSequence)
+    }
+    
+  
+    func  () {
+        //Create variables
+        //Use if statements for operator so like if op == 1 which means add then
+        
+              
+    }
+    
+    
+    func addScore() {
+        
+        
+    }
+    
+func jump() {
+
+
+ 
+}
+ 
+ 
+ 
+ 
+    
+            
+               
+         if currentGameState == gameState.inGame {
+ 
+                updateFocusIfNeeded()
+                didFinishUpdate()
+                
+                
+              //if statements
+    }
+           
+                
+    
+ 
+    func changeScene() {
+        let sceneToMoveTo = GameOverScene(size: self.size)
+        sceneToMoveTo.scaleMode = self.scaleMode
+        let myTransition = SKTransition.fade(withDuration: 0.5)
+        self.view!.presentScene(sceneToMoveTo, transition: myTransition)
+    }
+    
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if currentGameState == gameState.preGame {
+            startGame()
+        }
+    }
+ 
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        for touch: AnyObject in touches {
+            
+            let pointOfTouch = touch.location(in: self)
+            let previousPointOfTouch = touch.previousLocation(in: self)
+            let amountDraggedX = pointOfTouch.x - previousPointOfTouch.x
+            let amountDraggedY = pointOfTouch.y - previousPointOfTouch.y
+ 
+ 
+//call functions needed 
+    if currentGameState == gameState.inGame {
+                player.position.x += amountDragged }
+ 
+    }
+}
+}
