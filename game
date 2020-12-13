@@ -203,6 +203,14 @@ func jump() {
  
             if nodeITapped.name == "downButton" {
 		player.yposition = player.yposition - 20
+		
+		
+	If nodeTapped.name== “leftButton” {
+	background.xposition = background.xpsotion - 20
+
+	If nodeTapped.name== “upButton” {
+	Player.yposition = player.yposition + 20
+
 
  
     }
