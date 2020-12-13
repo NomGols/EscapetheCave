@@ -122,8 +122,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         let deleteSequence = SKAction.sequence([fadeOutAction, deleteAction])
         startLabel.run(deleteSequence)
         
-        let moveEquationToScreen = SKAction.moveTo(y: self.size.height * 0.05, duration: 0.5)
-        
+       
         let startGameSequence = SKAction.sequence([moveEquationToScreen])
         block.run(startGameSequence)
     }
@@ -194,6 +193,17 @@ func jump() {
 //call functions needed 
     if currentGameState == gameState.inGame {
                 player.position.x += amountDragged }
+                
+                //call functions needed 
+    if currentGameState == gameState.inGame {
+                 if nodeITapped.name == "rightButton" {
+               background.xposition --
+//SCROLLING BACKGROUND
+            }
+ 
+            if nodeITapped.name == "downButton" {
+		player.yposition = player.yposition - 20
+
  
     }
 }
