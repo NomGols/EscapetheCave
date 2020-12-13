@@ -95,13 +95,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         scoreLabel.text = String(score)
         self.addChild(scoreLabel)
  
-         themeLabel.position = CGPoint(x: self.size.width/2, y: self.size.height + themeLabel.frame.size.height)
-       themeLabel.fontColor = .white
-        themeLabel.fontSize = 150
-        themeLabel.zPosition = 100
-        themeLabel.text = String(theme) //displays random theme
-        self.addChild(themeLabel)
-       
+         
     
         let moveToScreen = SKAction.moveTo(y: self.size.height * 0.8, duration: 0.3)
         scoreLabel.run(moveToScreen)
