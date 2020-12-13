@@ -23,7 +23,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let scoreLabel = SKLabelNode(fontNamed: "Consequences")
     let levelLabel = SKLabelNode(fontNamed: "Consequences")
     let startLabel = SKLabelNode(fontNamed: "Consequences")
-    let themeLabel = SKLabelNode(fontNamed: "Consequences")
+    
  
     
     var level = 0 //resets level
