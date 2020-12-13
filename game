@@ -1,4 +1,3 @@
-func gameScreen () {
  
 //  GameScreen.swift
  
@@ -23,8 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     let scoreLabel = SKLabelNode(fontNamed: "Consequences")
     let levelLabel = SKLabelNode(fontNamed: "Consequences")
     let startLabel = SKLabelNode(fontNamed: "Consequences")
-    
- 
+   
     
     var level = 0 //resets level
     
@@ -32,6 +30,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     struct PhysicsCategories {
         static let None : UInt32 = 0
         static let Player : UInt32 = 0b1 //1
+        static let Creature: UInt32 = 0b10 //2 
+        static let Coin: UInt32 = 4
+        static let Treasure: UInt32 = 8
+         
            }
     
     
@@ -44,9 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
     }
  
     var gameArea: CGRect
-    var dot  = SKSpriteNode(imageNamed: "dot1")
-    var color: Int = 1
-    var theme: Int = 1
+ 
     
     override init(size: CGSize) {
         if UIDevice().userInterfaceIdiom == .phone && UIScreen.main.nativeBounds.height == 2436 {
@@ -94,8 +94,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         scoreLabel.zPosition = 100
         scoreLabel.text = String(score)
         self.addChild(scoreLabel)
- 
-         
+       
     
         let moveToScreen = SKAction.moveTo(y: self.size.height * 0.8, duration: 0.3)
         scoreLabel.run(moveToScreen)
@@ -110,8 +109,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         startLabel.position = CGPoint (x: self.size.width/2, y: self.size.height/2)
         startLabel.alpha = 0 //see through
         self.addChild(startLabel)
-        let fadeInAction = SKAction.fadeIn(withDuration: 0.3)
-        startLabel.run(fadeInAction)
+        //let fadeInAction = SKAction.fadeIn(withDuration: 0.3)
+       // startLabel.run(fadeInAction)
         
     }
  
@@ -122,36 +121,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate
         let deleteSequence = SKAction.sequence([fadeOutAction, deleteAction])
         startLabel.run(deleteSequence)
         
-       
+        //let moveEquationToScreen = SKAction.moveTo(y: self.size.height * 0.05, duration: 0.5)
+        
         let startGameSequence = SKAction.sequence([moveEquationToScreen])
         block.run(startGameSequence)
     }
     
   
-    func  () {
-        //Create variables
-        //Use if statements for operator so like if op == 1 which means add then
-        
+    func  createCreatures () {
+        numCreature = Int.random (in: 1...5)
+        //for loop 
+self.addChild(Creature)
+ 
               
     }
     
     
-    func addScore() {
-        
-        
-    }
-    
-func jump() {
-
-
- 
-}
- 
- 
- 
- 
-    
-            
+           
                
          if currentGameState == gameState.inGame {
  
@@ -173,7 +159,80 @@ func jump() {
     }
     
     
+ func didBegin(_ contact: SKPhysicsContact) {
+        var body1 = SKPhysicsBody()
+        var body2 = SKPhysicsBody()
+        var body3 = SKPhysicsBody()
+        var body4 = SKPhysicsBody()
+
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask{
+            body1 = contact.bodyA
+            body2 = contact.bodyB
+        }
+            
+        else {
+            body1 = contact.bodyB
+            body2 = contact.bodyA
+        }
+  
+        
+        //finds the closest cube to the catcher so that it does not mistake one cube color from another
+       // var distanceArray = [Int]()
+        //var closestNode : SKSpriteNode?
+        //scene?.enumerateChildNodes(withName: "Cube") {node,_ in
+
+          //  if let sprite = node as? SKSpriteNode {
+            //    let distance = Int(sprite.position.y)
+              //  distanceArray.append(distance)
+                //if distance == distanceArray.min() {
+                  //  closestNode = sprite
+                  
+                //}
+
+            //}
+
+        //}
+
+
+        
+        if (body1.categoryBitMask == PhysicsCategories.Player) &&
+            (body2.categoryBitMask == PhysicsCategories.Creature) {       
+                        runGameOver()
+                }
+ 
+ 
+       if (body2.categoryBitMask == PhysicsCategories.Player) &&
+            (body1.categoryBitMask == PhysicsCategories.Creature) {       
+                        runGameOver()
+                }
+
+        
+ 
+if (body1.categoryBitMask == PhysicsCategories.Player) &&
+	(body2.categoryBitMask == PhysicsCategories.Coin) {
+		coin = coin + 1
+}
+ 
+if (body2.categoryBitMask == PhysicsCategories.Player) &&
+	(body1.categoryBitMask == PhysicsCategories.Coin) {
+		coin = coin + 1
+}
     
+ 
+ 
+if (body1.categoryBitMask == PhysicsCategories.Player) &&
+	(body2.categoryBitMask == PhysicsCategories.Treasure) {
+		treasure = treasure + 1
+}
+ 
+if (body2.categoryBitMask == PhysicsCategories.Player) &&
+	(body1.categoryBitMask == PhysicsCategories.Treasure) {
+		treasure = treasure + 1
+}
+ 
+ 
+ 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if currentGameState == gameState.preGame {
             startGame()
@@ -184,33 +243,31 @@ func jump() {
         
         for touch: AnyObject in touches {
             
-            let pointOfTouch = touch.location(in: self)
-            let previousPointOfTouch = touch.previousLocation(in: self)
-            let amountDraggedX = pointOfTouch.x - previousPointOfTouch.x
-            let amountDraggedY = pointOfTouch.y - previousPointOfTouch.y
- 
- 
+         //call functions needed 
+             let pointOfTouch = touch.location(in: self)
+            let nodeITapped = atPoint(pointOfTouch)
+            //let previousPointOfTouch = touch.previousLocation(in: self)
+            //let amountDraggedX = pointOfTouch.x - previousPointOfTouch.x
+            //let amountDraggedY = pointOfTouch.y - previousPointOfTouch.y        
+            
+            
 //call functions needed 
     if currentGameState == gameState.inGame {
-                player.position.x += amountDragged }
-                
-                //call functions needed 
-    if currentGameState == gameState.inGame {
-                 if nodeITapped.name == "rightButton" {
-               background.xposition --
+             if nodeITapped.name == "rightButton" {
+               background.xposition -++
 //SCROLLING BACKGROUND
             }
  
             if nodeITapped.name == "downButton" {
 		player.yposition = player.yposition - 20
-		
-		
+ 
+            } 
+
 	If nodeTapped.name== “leftButton” {
-	background.xposition = background.xpsotion - 20
+	background.xposition = background.xposition - 20
 
 	If nodeTapped.name== “upButton” {
 	Player.yposition = player.yposition + 20
-
 
  
     }
